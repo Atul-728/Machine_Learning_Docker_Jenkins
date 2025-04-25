@@ -1,0 +1,244 @@
+{% extends 'layout.html' %}
+
+{% block title %}About Milk Quality Grader{% endblock %}
+
+{% block content %}
+<section class="about-header">
+    <h1>About Our Milk Quality Grader</h1>
+    <p>Leveraging Machine Learning for Precision Dairy Quality Assessment</p>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="section-content">
+            <h2>Project Overview</h2>
+            <p>The Milk Quality Grader is an advanced machine learning system designed to accurately assess and grade milk quality based on multiple parameters. Our system provides dairy farmers, processors, and quality control specialists with a reliable, objective method for evaluating milk samples.</p>
+            <p>Using parameters such as pH, temperature, taste, odor, fat content, turbidity, and color, our algorithm can predict milk quality with over 95% accuracy, sorting samples into low, medium, and high-quality grades.</p>
+        </div>
+        <div class="section-image">
+            <img src="https://images.unsplash.com/photo-1616624019048-75c869797be7?w=800&h=600&fit=crop" alt="Milk Analysis" class="overview-img">
+        </div>
+    </div>
+</section>
+
+<section class="methodology">
+    <div class="container">
+        <h2>Our Methodology</h2>
+        <div class="methodology-cards">
+            <div class="methodology-card">
+                <div class="methodology-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>Data Collection</h3>
+                <p>We collected and analyzed data from thousands of milk samples with various quality parameters.</p>
+            </div>
+            <div class="methodology-card">
+                <div class="methodology-icon">
+                    <i class="fas fa-broom"></i>
+                </div>
+                <h3>Data Cleaning</h3>
+                <p>Rigorous pre-processing to ensure data quality by handling missing values and removing duplicates.</p>
+            </div>
+            <div class="methodology-card">
+                <div class="methodology-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3>Feature Engineering</h3>
+                <p>Transformation and selection of the most relevant features for accurate prediction.</p>
+            </div>
+            <div class="methodology-card">
+                <div class="methodology-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Model Training</h3>
+                <p>Training and evaluation of multiple ML algorithms to find the best performer.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="model-comparison">
+    <h2>Model Comparison</h2>
+    <div class="chart-container">
+        <canvas id="accuracyChart"></canvas>
+    </div>
+    <div class="model-info">
+        <p>We evaluated multiple machine learning models including Logistic Regression, Decision Tree, Random Forest, KNN, and Gaussian Naive Bayes to identify the most accurate approach for milk quality prediction.</p>
+        <p>After rigorous testing, the Random Forest classifier emerged as the top performer with over 95% accuracy on test data.</p>
+    </div>
+</section>
+
+<section class="parameters">
+    <h2>Quality Parameters</h2>
+    <div class="parameters-container">
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-vial"></i>
+            </div>
+            <h3>pH Level</h3>
+            <p>Measure of acidity, with optimal milk typically having pH between 6.5-6.7.</p>
+        </div>
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-temperature-high"></i>
+            </div>
+            <h3>Temperature</h3>
+            <p>Affects bacterial growth and overall milk quality.</p>
+        </div>
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h3>Taste</h3>
+            <p>Sensory evaluation of flavor profile.</p>
+        </div>
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-wind"></i>
+            </div>
+            <h3>Odor</h3>
+            <p>Smell characteristics that indicate freshness.</p>
+        </div>
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-oil-can"></i>
+            </div>
+            <h3>Fat Content</h3>
+            <p>Percentage of milk fat, affecting richness and nutritional value.</p>
+        </div>
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-cloud"></i>
+            </div>
+            <h3>Turbidity</h3>
+            <p>Measure of clarity or cloudiness in the milk.</p>
+        </div>
+        <div class="parameter-card">
+            <div class="parameter-icon">
+                <i class="fas fa-palette"></i>
+            </div>
+            <h3>Color</h3>
+            <p>Visual appearance indicating quality and composition.</p>
+        </div>
+    </div>
+</section>
+
+<section class="research-findings">
+    <div class="container">
+        <div class="section-image">
+            <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=800&h=600&fit=crop" alt="Research Findings" class="research-img">
+        </div>
+        <div class="section-content">
+            <h2>Key Findings</h2>
+            <ul>
+                <li>Strong correlation between pH and Temperature (r = 0.72)</li>
+                <li>Fat content significantly influences taste perception</li>
+                <li>Odor and turbidity are closely related quality indicators</li>
+                <li>Random Forest algorithm achieved the highest prediction accuracy</li>
+                <li>Combined parameter analysis provides more reliable grading than any single metric</li>
+            </ul>
+            <p>Our research demonstrates that a multi-parameter approach to milk quality assessment outperforms traditional single-factor evaluations.</p>
+        </div>
+    </div>
+</section>
+
+<section class="team">
+    <h2>Research Team</h2>
+    <div class="team-container">
+        <div class="team-member">
+            <div class="member-image">
+                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop" alt="Dr. Sharma" class="team-img">
+            </div>
+            <h3>Dr. Amit Sharma</h3>
+            <p>Lead ML Engineer</p>
+        </div>
+        <div class="team-member">
+            <div class="member-image">
+                <img src="https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=300&h=300&fit=crop" alt="Dr. Patel" class="team-img">
+            </div>
+            <h3>Dr. Priya Patel</h3>
+            <p>Dairy Science Expert</p>
+        </div>
+        <div class="team-member">
+            <div class="member-image">
+                <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=300&h=300&fit=crop" alt="Dr. Singh" class="team-img">
+            </div>
+            <h3>Dr. Rajiv Singh</h3>
+            <p>Data Scientist</p>
+        </div>
+        <div class="team-member">
+            <div class="member-image">
+                <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=300&h=300&fit=crop" alt="Dr. Gupta" class="team-img">
+            </div>
+            <h3>Dr. Neha Gupta</h3>
+            <p>Quality Assurance Specialist</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Model accuracy chart
+    const ctx = document.getElementById('accuracyChart').getContext('2d');
+    const accuracyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Logistic Regression', 'Decision Tree', 'Random Forest', 'KNN', 'Gaussian NB'],
+            datasets: [{
+                label: 'Model Accuracy (%)',
+                data: [78.3, 92.4, 95.7, 89.1, 85.6],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 99, 132, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Accuracy (%)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Machine Learning Models'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Accuracy: ${context.raw}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

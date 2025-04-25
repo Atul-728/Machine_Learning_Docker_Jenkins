@@ -1,0 +1,361 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Milk Quality Predictor{% endblock %}
+
+{% block extra_css %}
+<style>
+    .input-range-values {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 5px;
+        font-size: 12px;
+    }
+    .result-animation {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .result-animation.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .loading-spinner {
+        display: none;
+        margin: 20px auto;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid #007bff;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .grade-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .grade-high {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .grade-medium {
+        background-color: #FF9800;
+        color: white;
+    }
+    .grade-low {
+        background-color: #F44336;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="predictor-header">
+    <h1>Milk Quality Predictor</h1>
+    <p>Enter the milk parameters to predict its quality grade</p>
+</section>
+
+<section class="predictor-container">
+    <div class="predictor-form-container">
+        <form id="predictor-form" method="POST" class="predictor-form">
+            <div class="form-group">
+                <label for="pH">pH Level <span class="param-value" id="pHValue">7.0</span></label>
+                <input type="range" id="pH" name="pH" min="3" max="9" step="0.1" value="7.0" class="form-range">
+                <div class="input-range-values">
+                    <span>3.0 (Acidic)</span>
+                    <span>9.0 (Alkaline)</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="Temprature">Temperature (°C) <span class="param-value" id="TempratureValue">25</span></label>
+                <input type="range" id="Temprature" name="Temprature" min="0" max="100" step="1" value="25" class="form-range">
+                <div class="input-range-values">
+                    <span>0°C</span>
+                    <span>100°C</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="Taste">Taste <span class="param-value" id="TasteValue">1</span></label>
+                <select id="Taste" name="Taste" class="form-select">
+                    <option value="0">0 - Bad</option>
+                    <option value="1" selected>1 - Good</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Odor">Odor <span class="param-value" id="OdorValue">1</span></label>
+                <select id="Odor" name="Odor" class="form-select">
+                    <option value="0">0 - Bad</option>
+                    <option value="1" selected>1 - Good</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Fat">Fat Content (%) <span class="param-value" id="FatValue">3</span></label>
+                <input type="range" id="Fat" name="Fat" min="0" max="10" step="0.1" value="3" class="form-range">
+                <div class="input-range-values">
+                    <span>0%</span>
+                    <span>10%</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="Turbidity">Turbidity <span class="param-value" id="TurbidityValue">1</span></label>
+                <select id="Turbidity" name="Turbidity" class="form-select">
+                    <option value="0">0 - Low</option>
+                    <option value="1" selected>1 - High</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Colour">Color <span class="param-value" id="ColourValue">255</span></label>
+                <input type="range" id="Colour" name="Colour" min="0" max="255" step="1" value="255" class="form-range">
+                <div class="input-range-values">
+                    <span>0 (Dark)</span>
+                    <span>255 (Light)</span>
+                </div>
+                <div class="color-preview" id="colorPreview"></div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" id="predict-button" class="btn primary-btn">
+                    <i class="fas fa-vial"></i> Predict Quality
+                </button>
+                <button type="reset" id="reset-button" class="btn secondary-btn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </form>
+        
+        <div class="loading-spinner" id="loading-spinner"></div>
+        
+        <div id="prediction-result" class="prediction-result result-animation">
+            {% if prediction %}
+            <h3>Prediction Result</h3>
+            <div class="grade-badge grade-{{ prediction.grade }}">
+                {{ prediction.grade|title }} Quality
+            </div>
+            <p class="grade-description">{{ prediction.description }}</p>
+            <div class="result-details">
+                <p><strong>What this means:</strong> Based on the parameters you provided, our machine learning model has determined that your milk sample is of {{ prediction.grade }} quality.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="predictor-info">
+        <h2>How It Works</h2>
+        <p>Our milk quality predictor uses a Gaussian Naive Bayes machine learning model trained on thousands of milk samples. Enter the parameters of your milk sample to receive an instant quality assessment.</p>
+        
+        <div class="parameter-info">
+            <h3>Understanding Parameters</h3>
+            <ul>
+                <li><strong>pH Level:</strong> Measures acidity. Normal milk has pH between 6.5-6.7.</li>
+                <li><strong>Temperature:</strong> Affects bacterial growth and milk freshness.</li>
+                <li><strong>Taste:</strong> Sensory evaluation of flavor (good or bad).</li>
+                <li><strong>Odor:</strong> Smell characteristics indicating freshness.</li>
+                <li><strong>Fat Content:</strong> Percentage of milk fat.</li>
+                <li><strong>Turbidity:</strong> Cloudiness or clarity of the milk.</li>
+                <li><strong>Color:</strong> Visual appearance, with normal milk being white or slightly yellowish.</li>
+            </ul>
+        </div>
+        
+        <div class="grades-info">
+            <h3>Quality Grades</h3>
+            <div class="grade-info">
+                <span class="grade-badge grade-high">High Quality</span>
+                <p>Exceeds standards, ideal for premium dairy products.</p>
+            </div>
+            <div class="grade-info">
+                <span class="grade-badge grade-medium">Medium Quality</span>
+                <p>Meets basic standards, suitable for most dairy products.</p>
+            </div>
+            <div class="grade-info">
+                <span class="grade-badge grade-low">Low Quality</span>
+                <p>May require additional processing or not suitable for direct consumption.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Update value displays for range inputs
+    const rangeInputs = document.querySelectorAll('input[type="range"]');
+    rangeInputs.forEach(input => {
+        const valueDisplay = document.getElementById(`${input.id}Value`);
+        valueDisplay.textContent = input.value;
+        
+        input.addEventListener('input', function() {
+            valueDisplay.textContent = this.value;
+            
+            // For color input, update the color preview
+            if (this.id === 'Colour') {
+                updateColorPreview(this.value);
+            }
+        });
+    });
+    
+    // Update select values
+    const selectInputs = document.querySelectorAll('select');
+    selectInputs.forEach(select => {
+        const valueDisplay = document.getElementById(`${select.id}Value`);
+        if (valueDisplay) {
+            valueDisplay.textContent = select.value;
+            
+            select.addEventListener('change', function() {
+                valueDisplay.textContent = this.value;
+            });
+        }
+    });
+    
+    // Color preview function
+    function updateColorPreview(value) {
+        const colorPreview = document.getElementById('colorPreview');
+        if (colorPreview) {
+            // Calculate a color based on the input value (0-255)
+            // White milk color is around 255, yellower as it decreases
+            const colorValue = Math.min(255, Math.max(0, parseInt(value)));
+            const r = 255;
+            const g = colorValue;
+            const b = Math.max(200, colorValue - 50);
+            
+            colorPreview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        }
+    }
+    
+    // Initialize color preview
+    const colorInput = document.getElementById('Colour');
+    if (colorInput) {
+        updateColorPreview(colorInput.value);
+    }
+    
+    // Form submission with AJAX
+    const form = document.getElementById('predictor-form');
+    const resultContainer = document.getElementById('prediction-result');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading spinner
+            if (loadingSpinner) loadingSpinner.style.display = 'block';
+            
+            // Hide previous results
+            if (resultContainer) {
+                resultContainer.classList.remove('show');
+            }
+            
+            // Collect form data
+            const formData = new FormData(form);
+            
+            // Send AJAX request
+            fetch('/predictor', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                
+                // Create result HTML
+                if (resultContainer) {
+                    let resultHTML = '';
+                    
+                    if (data.error) {
+                        resultHTML = `
+                            <h3>Error</h3>
+                            <p>${data.error}</p>
+                        `;
+                    } else {
+                        resultHTML = `
+                            <h3>Prediction Result</h3>
+                            <div class="grade-badge grade-${data.grade}">
+                                ${data.grade.charAt(0).toUpperCase() + data.grade.slice(1)} Quality
+                            </div>
+                            <p class="grade-description">${data.description}</p>
+                            <div class="result-details">
+                                <p><strong>What this means:</strong> Based on the parameters you provided, our machine learning model has determined that your milk sample is of ${data.grade} quality.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    resultContainer.innerHTML = resultHTML;
+                    
+                    // Show with animation
+                    setTimeout(() => {
+                        resultContainer.classList.add('show');
+                    }, 100);
+                }
+            })
+            .catch(error => {
+                // Hide loading spinner
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                
+                // Show error message
+                if (resultContainer) {
+                    resultContainer.innerHTML = `
+                        <h3>Error</h3>
+                        <p>An error occurred while processing your request. Please try again.</p>
+                    `;
+                    resultContainer.classList.add('show');
+                }
+                console.error('Error:', error);
+            });
+        });
+    }
+    
+    // Reset button functionality
+    const resetButton = document.getElementById('reset-button');
+    if (resetButton) {
+        resetButton.addEventListener('click', function() {
+            // Hide results
+            if (resultContainer) {
+                resultContainer.classList.remove('show');
+            }
+            
+            // Reset value displays
+            setTimeout(() => {
+                rangeInputs.forEach(input => {
+                    const valueDisplay = document.getElementById(`${input.id}Value`);
+                    if (valueDisplay) valueDisplay.textContent = input.value;
+                    
+                    if (input.id === 'Colour') {
+                        updateColorPreview(input.value);
+                    }
+                });
+                
+                selectInputs.forEach(select => {
+                    const valueDisplay = document.getElementById(`${select.id}Value`);
+                    if (valueDisplay) valueDisplay.textContent = select.value;
+                });
+            }, 10);
+        });
+    }
+    
+    // Show existing prediction with animation
+    if (resultContainer && resultContainer.innerHTML.trim() !== '') {
+        setTimeout(() => {
+            resultContainer.classList.add('show');
+        }, 300);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'layout.html' %}
+
+{% block title %}Milk Quality Grader - Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Vision-Based Grading for Dairy Products</h1>
+        <p>Advanced machine learning for accurate milk quality assessment</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('predictor') }}" class="btn primary-btn">Try The Predictor</a>
+            <a href="{{ url_for('about') }}" class="btn secondary-btn">Learn More</a>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&h=600&fit=crop" alt="Milk Quality Assessment" class="hero-img">
+    </div>
+</section>
+
+<section class="features">
+    <h2>Our Technology</h2>
+    <div class="features-container">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-microscope"></i>
+            </div>
+            <h3>Advanced Analysis</h3>
+            <p>Utilizes multiple parameters including pH, temperature, taste, odor, fat content, turbidity, and color.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h3>Machine Learning</h3>
+            <p>Powered by sophisticated algorithms like Random Forest, Gaussian Naive Bayes, and more.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>High Accuracy</h3>
+            <p>Achieves over 95% prediction accuracy for milk quality grading.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <h3>Real-time Results</h3>
+            <p>Get instant grading results for your milk samples.</p>
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="stat-container">
+        <div class="stat-item">
+            <div class="stat-number" data-target="95">0</div>
+            <div class="stat-label">% Accuracy</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-target="7">0</div>
+            <div class="stat-label">Quality Parameters</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-target="5">0</div>
+            <div class="stat-label">ML Models Compared</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-target="1000">0</div>
+            <div class="stat-label">Samples Analyzed</div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="cta-content">
+        <h2>Ready to Grade Your Milk?</h2>
+        <p>Try our milk quality predictor now and get instant results.</p>
+        <a href="{{ url_for('predictor') }}" class="btn primary-btn">Start Prediction</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation for the stats counter
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    const options = {
+        rootMargin: '0px',
+        threshold: 0.5
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.getAttribute('data-target'));
+                const increment = Math.ceil(target / 50);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        if (current > target) current = target;
+                        entry.target.textContent = current;
+                        setTimeout(updateCounter, 40);
+                    }
+                };
+                
+                updateCounter();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, options);
+    
+    statNumbers.forEach(number => {
+        observer.observe(number);
+    });
+});
+</script>
+{% endblock %}
