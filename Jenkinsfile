@@ -27,7 +27,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    bat 'docker build -t milk-quality-predictor .'
+                    bat 'docker build -t milk-quality-app .'
                 }
             }
         }
