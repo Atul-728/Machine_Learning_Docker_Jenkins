@@ -24,7 +24,21 @@ pipeline {
                 bat 'docker run --rm milk-quality-predictor:latest python -m unittest discover -s tests'
             }
         }
-        
+        stage('Docker Build') {
+            steps {
+                dir('/') {
+                    bat 'docker build -t milk-quality-predictor .'
+                }
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                dir('/') {
+                    bat 'docker-compose -f docker-compose.yml up -d'
+                }
+            }
+        }
         // stage('Deploy to Development') {
         //     when {
         //         branch 'develop'
