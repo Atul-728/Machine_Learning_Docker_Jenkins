@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                dir('/') {
+                script {
                     bat 'docker build -t milk-quality-predictor .'
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Docker Run') {
             steps {
-                dir('/') {
+                script{
                     bat 'docker-compose -f docker-compose.yml up -d'
                 }
             }
